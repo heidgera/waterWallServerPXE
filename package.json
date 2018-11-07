@@ -1,0 +1,26 @@
+{
+  "name": "TemplateProject",
+  "version": "1.1.0",
+  "description": "Simple template for electron apps",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heidgera/Electron_Template.git"
+  },
+  "author": "ajhg",
+  "license": "CC0-1.0",
+  "homepage": "http://re.trof.it",
+  "devDependencies": {
+    "electron": "1.7.5"
+  },
+  "dependencies": {
+    "express": "^4.15.4",
+    "path": "^0.12.7",
+    "serialport": "^4.0.7",
+    "ws": "^3.1.0",
+    "rpio": "^0.9.17"
+  }
+}
