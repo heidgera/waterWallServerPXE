@@ -72,7 +72,7 @@ obtain(['./src/MuseServer/wsServer.js', './src/drawGrid.js', './src/demoPattern.
         order.push(data);
       }
 
-      console.log(data);
+      console.log(`${data} is ${order.length}`);
     });
 
     µ('#loop').addEventListener('click', ()=> {
