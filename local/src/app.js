@@ -68,11 +68,11 @@ obtain(['./src/MuseServer/wsServer.js', './src/drawGrid.js', './src/demoPattern.
     wss.addListener('ip', ({ data, details })=> {console.log(`IP address of ${details.from.id} is ${ip}`);});
 
     wss.addListener('uuid', ({ data, details })=> {
-      if (!order.find(mod=>mod == data)) {
+      if (order.findIndex(mod=>mod == data) >= 0) {
         order.push(data);
       }
 
-      console.log(`${data} is ${order.length}`);
+      console.log(`${data} is ${order.findIndex(mod=>mod == data)}`);
     });
 
     µ('#loop').addEventListener('click', ()=> {
