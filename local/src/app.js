@@ -1,7 +1,9 @@
 'use strict';
 
-obtain(['./src/server/wsServer.js', './src/drawGrid.js', './src/demoPattern.js'], ({ wss }, { Grid }, { pattern })=> {
+obtain(['./src/MuseServer/wsServer.js', './src/drawGrid.js', './src/demoPattern.js'], ({ wss }, { Grid }, { pattern })=> {
   exports.app = {};
+
+  var order = [];
 
   exports.app.start = ()=> {
     var mod = {
@@ -15,11 +17,7 @@ obtain(['./src/server/wsServer.js', './src/drawGrid.js', './src/demoPattern.js']
 
       set pixelWidth(val) {
         this.PixelWidth = val;
-        for (var i = 0; i < this.number; i++) {
-          if (wss.orderedClients[i]) {
-            wss.send(i, { pixelWidth: this.PixelWidth });
-          }
-        }
+        wss.broadcast('pixelWidth', this.PixelWidth);
       },
 
       get pixelWidth() {
@@ -28,11 +26,7 @@ obtain(['./src/server/wsServer.js', './src/drawGrid.js', './src/demoPattern.js']
 
       set pixelHeight(val) {
         this.PixelHeight = val;
-        for (var i = 0; i < this.number; i++) {
-          if (wss.orderedClients[i]) {
-            wss.send(i, { pixelHeight: this.PixelHeight });
-          }
-        }
+        wss.broadcast('pixelHeight', this.PixelHeight);
       },
 
       get pixelHeight() {
@@ -47,10 +41,8 @@ obtain(['./src/server/wsServer.js', './src/drawGrid.js', './src/demoPattern.js']
     µ('#send').addEventListener('click', ()=> {
       mod.pixelWidth = 1;
       mod.pixelHeight = 50;
-      for (var i = 0; i < modules; i++) {
-        if (wss.orderedClients[i]) {
-          wss.send(i, { drawRaster: { data: grid.getSubGrid(i * mod.cells, mod.cells), stamp: Date.now() + 100 } });
-        }
+      for (var i = 0; i < order.length; i++) {
+        wss.send(order[i], { drawRaster: { data: grid.getSubGrid(i * mod.cells, mod.cells), stamp: Date.now() + 100 } });
       }
     });
 
@@ -59,9 +51,9 @@ obtain(['./src/server/wsServer.js', './src/drawGrid.js', './src/demoPattern.js']
     µ('#demo').addEventListener('click', ()=> {
       mod.pixelWidth = 2;
       mod.pixelHeight = 60;
-      for (var i = 0; i < modules; i++) {
+      for (var i = 0; i < order.length; i++) {
         if (wss.orderedClients[i]) {
-          wss.send(i, { drawRaster: { data: getDemoSubGrid(i * mod.cells, mod.cells), stamp: Date.now() + 100 } });
+          wss.send(order[i], { drawRaster: { data: getDemoSubGrid(i * mod.cells, mod.cells), stamp: Date.now() + 100 } });
         }
       }
     });
@@ -73,7 +65,15 @@ obtain(['./src/server/wsServer.js', './src/drawGrid.js', './src/demoPattern.js']
 
     var loopInt = null;
 
-    wss.addListener('ip', (ip, data)=> {console.log(`IP address of ${data._id} is ${ip}`);});
+    wss.addListener('ip', ({ data, details })=> {console.log(`IP address of ${details.from.id} is ${ip}`);});
+
+    wss.addListener('uuid', ({ data, details })=> {
+      if (!order.find(mod=>mod == data)) {
+        order.push(data);
+      }
+
+      console.log(`${data} is ${order.length}`);
+    });
 
     µ('#loop').addEventListener('click', ()=> {
       clearInterval(loopInt);
@@ -81,11 +81,9 @@ obtain(['./src/server/wsServer.js', './src/drawGrid.js', './src/demoPattern.js']
         /*if (wss.orderedClients[0]) {
           wss.send(0, { drawRaster: { data: grid.getData(), stamp: Date.now() + 100 } });
         }*/
-        for (var i = 0; i < modules; i++) {
-          if (wss.orderedClients[i]) {
-            wss.send(i, { pixelHeight: 50 });
-            wss.send(i, { drawRaster: { data: grid.getSubGrid(((modules - 1) - i) * 12, 12), stamp: Date.now() + 100 } });
-          }
+        for (var i = 0; i < order.length; i++) {
+          wss.send(order[i], { pixelHeight: 50 });
+          wss.send(order[i], { drawRaster: { data: grid.getSubGrid(((modules - 1) - i) * 12, 12), stamp: Date.now() + 100 } });
         }
       }, 12 * 50);
     });
@@ -104,7 +102,8 @@ obtain(['./src/server/wsServer.js', './src/drawGrid.js', './src/demoPattern.js']
     var count = pattern.length - 1;
 
     wss.onClientConnect = (ws)=> {
-      ws.send(JSON.stringify({ pixelHeight: 50 }));
+
+      ws.sendObject({ pixelHeight: 50 });
     };
 
   };

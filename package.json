@@ -1,21 +1,16 @@
 {
-  "name": "TemplateProject",
+  "name": "WaterWallServer",
   "version": "1.1.0",
-  "description": "Simple template for electron apps",
-  "main": "main.js",
+  "description": "Server for Waterwall control",
   "scripts": {
-    "start": "electron main.js"
+    "start": "electron ../main.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/heidgera/Electron_Template.git"
+    "url": "git+https://github.com/heidgera/waterWallServer.git"
   },
   "author": "ajhg",
   "license": "CC0-1.0",
-  "homepage": "http://re.trof.it",
-  "devDependencies": {
-    "electron": "1.7.5"
-  },
   "dependencies": {
     "express": "^4.15.4",
     "path": "^0.12.7",

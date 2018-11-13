@@ -1,0 +1,6 @@
+[submodule "common/src/muse"]
+	path = common/src/muse
+	url = https://github.com/heidgera/Muse
+[submodule "local/src/MuseServer"]
+	path = local/src/MuseServer
+	url = https://github.com/heidgera/MuseServer
