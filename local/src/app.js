@@ -42,7 +42,7 @@ obtain(['./src/MuseServer/wsServer.js', './src/drawGrid.js', './src/demoPattern.
       mod.pixelWidth = 1;
       mod.pixelHeight = 50;
       for (var i = 0; i < order.length; i++) {
-        wss.send(order[i], { drawRaster: { data: grid.getSubGrid(i * mod.cells, mod.cells), stamp: Date.now() + 100 } });
+        wss.send(order[i].id, { drawRaster: { data: grid.getSubGrid(i * mod.cells, mod.cells), stamp: Date.now() + 100 } });
       }
     });
 
@@ -53,7 +53,7 @@ obtain(['./src/MuseServer/wsServer.js', './src/drawGrid.js', './src/demoPattern.
       mod.pixelHeight = 60;
       for (var i = 0; i < order.length; i++) {
         if (wss.orderedClients[i]) {
-          wss.send(order[i], { drawRaster: { data: getDemoSubGrid(i * mod.cells, mod.cells), stamp: Date.now() + 100 } });
+          wss.send(order[i].id, { drawRaster: { data: getDemoSubGrid(i * mod.cells, mod.cells), stamp: Date.now() + 100 } });
         }
       }
     });
@@ -68,11 +68,13 @@ obtain(['./src/MuseServer/wsServer.js', './src/drawGrid.js', './src/demoPattern.
     wss.addListener('ip', ({ data, details })=> {console.log(`IP address of ${details.from.id} is ${ip}`);});
 
     wss.addListener('uuid', ({ data, details })=> {
-      if (!order.findIndex(mod=>mod == data) >= 0) {
-        order.push(data);
-      }
+      var orderInd = order.findIndex(mod=>mod.uuid == data);
+      if (!orderInd >= 0) {
+        orderInd = order.length;
+        order.push({ uuid: data, id: details.from });
+      } else order[orderInd].id = details.from;
 
-      console.log(`${data} is ${order.findIndex(mod=>mod == data)}`);
+      console.log(`${data} is ${order.findIndex(mod=>mod.uuid == data)}`);
     });
 
     µ('#loop').addEventListener('click', ()=> {
@@ -82,8 +84,8 @@ obtain(['./src/MuseServer/wsServer.js', './src/drawGrid.js', './src/demoPattern.
           wss.send(0, { drawRaster: { data: grid.getData(), stamp: Date.now() + 100 } });
         }*/
         for (var i = 0; i < order.length; i++) {
-          wss.send(order[i], { pixelHeight: 50 });
-          wss.send(order[i], { drawRaster: { data: grid.getSubGrid(((modules - 1) - i) * 12, 12), stamp: Date.now() + 100 } });
+          wss.send(order[i].id, { pixelHeight: 50 });
+          wss.send(order[i].id, { drawRaster: { data: grid.getSubGrid(((modules - 1) - i) * 12, 12), stamp: Date.now() + 100 } });
         }
       }, 12 * 50);
     });
