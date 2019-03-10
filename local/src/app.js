@@ -1,6 +1,6 @@
 'use strict';
 
-obtain(['./src/MuseServer/wsServer.js', './src/drawGrid.js', './src/demoPattern.js'], ({ wss }, { Grid }, { pattern })=> {
+obtain(['µ/server/wsServer.js', './src/drawGrid.js', './src/demoPattern.js'], ({ wss }, { Grid }, { pattern })=> {
   exports.app = {};
 
   var order = [];
