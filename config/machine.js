@@ -1,11 +1,10 @@
 exports.config = {
-  piFig: {
+  machine: {
     /*wifiHotspot: {
       ssid: 'Template',
       password: 'template!',
       domainName: 'template.net',
     },*/
-    appRepo: 'https://github.com/heidgera/waterWallServerPXE',
     wiredRouter: {
       domainName: 'waterwall.net',
     },
