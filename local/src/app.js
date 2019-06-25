@@ -56,7 +56,7 @@ obtain(['µ/server/socket.js', './src/drawGrid.js', './src/demoPattern.js'], ({ 
       mod.pixelHeight = 50;
 
       // send the drawn image to the clients
-      for (var i = 0; i < order.length; i++) {
+      for (let i = 0; i < order.length; i++) {
         wss.send(order[i].id, { drawRaster: { data: grid.getSubGrid(i * mod.cells, mod.cells), stamp: Date.now() + 100 } });
       }
     });
@@ -73,7 +73,7 @@ obtain(['µ/server/socket.js', './src/drawGrid.js', './src/demoPattern.js'], ({ 
       mod.pixelHeight = 60;
 
       // send the demo image to the clients
-      for (var i = 0; i < order.length; i++) {
+      for (let i = 0; i < order.length; i++) {
         if (wss.orderedClients[i]) {
           wss.send(order[i].id, { drawRaster: { data: getDemoSubGrid(i * mod.cells, mod.cells), stamp: Date.now() + 100 } });
         }
