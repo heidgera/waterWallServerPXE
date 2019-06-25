@@ -74,7 +74,7 @@ obtain(['µ/server/socket.js', './src/drawGrid.js', './src/demoPattern.js'], ({ 
 
       // send the demo image to the clients
       for (let i = 0; i < order.length; i++) {
-        if (wss.orderedClients[i]) {
+        if (order[i]) {
           wss.send(order[i].id, { drawRaster: { data: getDemoSubGrid(i * mod.cells, mod.cells), stamp: Date.now() + 100 } });
         }
       }
@@ -97,7 +97,7 @@ obtain(['µ/server/socket.js', './src/drawGrid.js', './src/demoPattern.js'], ({ 
       var orderInd = order.findIndex(mod=>mod.uuid == data);
 
       // if it is not in the array
-      if (!orderInd >= 0) {
+      if (orderInd < 0) {
         // save the current length of the array, and then push the serial num into array
         orderInd = order.length;
         order.push({ uuid: data, id: details.from.id });
